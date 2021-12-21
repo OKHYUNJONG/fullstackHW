@@ -128,6 +128,38 @@ function main(argv){
             beacon_nameserver(ip_addr, port_nameserver)
           }
         console.log("p2p beacon server is activated.")
+
+        db_thread = cluster.fork({"TYPE": 'db_thread'})
+        if (process.env.TYPE === 'db_thread') {
+            user_manager_nameserver(ip_addr, port_subscribe)
+          }
+        console.log("p2p subsciber database server is activated.")
+
+        relay_thread = cluster.fork({"TYPE": 'relay_thread'})
+        if (process.env.TYPE === 'relay_thread') {
+            relay_server_nameserver(ip_addr, port_chat_publisher, port_chat_collector)
+          }
+        console.log("p2p message relay server is activated.")
+    }
+    else{
+        ip_addr_p2p_server = name_server_ip_addr
+        console.log(`p2p server found at ${ip_addr_p2p_server}, and p2p client mode is activated.`)
     }
 
+    console.log("starting user registration procedure.")
+
+    
+
+}
+
+
+if (require.main === module) {
+    if (process.argv.length == 1) {
+        console.log("usage is 'python dechat.py _user-name_'.")
+    } 
+    else{
+        console.log("starting p2p chatting program.")
+        main(argv);
+    }
+    
 }
